@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class ControllerCharacter2D : MonoBehaviour
 {
+    [SerializeField] Animator animator;
+    [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] float speed;
     [SerializeField] float turnRate;
     [SerializeField] float jumpHeight;
@@ -18,6 +20,7 @@ public class ControllerCharacter2D : MonoBehaviour
 
     Rigidbody2D rb;
     Vector2 velocity = Vector3.zero;
+    bool faceRight = true;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -40,6 +43,7 @@ public class ControllerCharacter2D : MonoBehaviour
             {
                 velocity.y += Mathf.Sqrt(jumpHeight * -2 * Physics.gravity.y);
                 StartCoroutine(DoubleJump());
+                animator.SetTrigger("Jump");
             }
         }
         // adjust gravity for jump
@@ -51,7 +55,14 @@ public class ControllerCharacter2D : MonoBehaviour
         // move character
         rb.velocity = velocity;
 
+        // flip character
+        if (velocity.x > 0 && !faceRight) Flip();
+        if (velocity.x < 0 &&  faceRight) Flip();
+
         // rotate character to face direction of movement (velocity)
+
+        // Update Animator
+        animator.SetFloat("Speed", Mathf.Abs(velocity.x));
 
     }
 
@@ -70,5 +81,11 @@ public class ControllerCharacter2D : MonoBehaviour
             }
             yield return null;
         }
+    }
+
+    private void Flip()
+    {
+        faceRight = !faceRight;
+        spriteRenderer.flipX = !faceRight;
     }
 }
