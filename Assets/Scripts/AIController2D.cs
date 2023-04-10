@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.Search;
 using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
-public class ControllerCharacter2D : MonoBehaviour
+public class AIController2D : MonoBehaviour
 {
     [SerializeField] Animator animator;
     [SerializeField] SpriteRenderer spriteRenderer;
@@ -16,12 +16,23 @@ public class ControllerCharacter2D : MonoBehaviour
     [SerializeField] Transform groundTransform;
     [SerializeField] LayerMask groundLayerMask;
     [SerializeField] float groundRadius;
-
+    [Header("AI")]
+    [SerializeField] Transform[] waypoints;
+    [SerializeField] float rayDistance = 1;
 
     Rigidbody2D rb;
     Vector2 velocity = Vector3.zero;
     bool faceRight = true;
     float groundAngle = 0;
+    Transform targetWaypoint = null;
+
+        enum State
+    {
+        IDLE, PATROL, ATTACK, CHASE
+    }
+
+    State currentState = State.IDLE;
+    float stateTimer = 0;
 
     void Start()
     {
@@ -29,11 +40,52 @@ public class ControllerCharacter2D : MonoBehaviour
     }
     void Update()
     {
+        Vector2 direction = Vector2.zero;
+
+        switch(currentState)
+        {
+            case State.IDLE:
+            {
+                if(CanseePlayer()) currentState = State.CHASE;
+
+                stateTimer += Time.deltaTime;
+                if(stateTimer >= 2)
+                {
+                    SetNewWaypointTarget();
+                    currentState = State.PATROL;
+                }
+                break;
+            }
+            case State.ATTACK:
+            case State.CHASE:
+            case State.PATROL:
+            {
+                if(CanseePlayer()) currentState = State.CHASE;
+
+                direction.x = Mathf.Sign(targetWaypoint.position.x - transform.position.x);
+                Physics2D.Raycast(transform.position, Vector2.right * direction.x * rayDistance);
+                Debug.DrawRay(-transform.position, Vector2.right * direction.x * rayDistance);
+                float dx = Mathf.Abs(targetWaypoint.position.x - transform.position.x);
+                if(dx <= 0.25f)
+                {
+                    currentState = State.IDLE;
+                    stateTimer = 0;
+                }
+                // if(transform.position.x < targetWaypoint.position.x)
+                // {
+                //     direction.x = 1;
+                // }
+                // else
+                // {
+                //     direction.x = -1;
+                // }
+                break;
+            }
+        }
+
         // check if the character is on the ground
         bool onGround = Physics2D.OverlapCircle(groundTransform.position, 0.02f, groundLayerMask) != null;
         // get direction input
-        Vector2 direction = Vector2.zero;
-        direction.x = Input.GetAxis("Horizontal");
 
         // set velocity
         velocity.x = direction.x * speed;
@@ -85,9 +137,33 @@ public class ControllerCharacter2D : MonoBehaviour
         }
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(groundTransform.position, groundRadius);
+    }
+
     private void Flip()
     {
         faceRight = !faceRight;
         spriteRenderer.flipX = !faceRight;
+    }
+
+    private void SetNewWaypointTarget()
+    {
+        Transform waypoint = null;
+        do
+        {
+            waypoint = waypoints[Random.Range(0, waypoints.Length)];
+        } while(waypoint == targetWaypoint);
+        targetWaypoint = waypoint;
+    }
+
+    private bool CanseePlayer()
+    {
+        RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, ((faceRight) ? Vector2.right : Vector2.left) * rayDistance);
+        Debug.DrawRay(transform.position, ((faceRight) ? Vector2.right : Vector2.left) * rayDistance);
+
+        return raycastHit.collider != null && gameObject.CompareTag("Player");
     }
 }
