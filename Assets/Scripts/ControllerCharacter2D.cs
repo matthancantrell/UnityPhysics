@@ -30,7 +30,7 @@ public class ControllerCharacter2D : MonoBehaviour
     void Update()
     {
         // check if the character is on the ground
-        bool onGround = Physics2D.OverlapCircle(groundTransform.position, 0.02f, groundLayerMask) != null;
+        bool onGround = Physics2D.OverlapCircle(groundTransform.position, groundRadius, groundLayerMask) != null;
         // get direction input
         Vector2 direction = Vector2.zero;
         direction.x = Input.GetAxis("Horizontal");
@@ -65,7 +65,7 @@ public class ControllerCharacter2D : MonoBehaviour
 
         // Update Animator
         animator.SetFloat("Speed", Mathf.Abs(velocity.x));
-
+        animator.SetBool("Fall", !onGround && velocity.y < -0.1f);
     }
 
     IEnumerator DoubleJump()
@@ -89,5 +89,11 @@ public class ControllerCharacter2D : MonoBehaviour
     {
         faceRight = !faceRight;
         spriteRenderer.flipX = !faceRight;
+    }
+
+        private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(groundTransform.position, groundRadius);
     }
 }
