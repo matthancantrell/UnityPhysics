@@ -276,6 +276,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9207746740854890357, guid: e17b24f1e079d5e478e9a5bdf360b9b6,
         type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9207746740854890357, guid: e17b24f1e079d5e478e9a5bdf360b9b6,
+        type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -607,7 +612,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 331788332}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -809,7 +814,7 @@ GameObject:
   - component: {fileID: 1229012391}
   m_Layer: 3
   m_Name: Character
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -974,7 +979,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1272739425}
   - component: {fileID: 1272739426}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Mogus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1253,7 +1258,7 @@ GameObject:
   - component: {fileID: 1692902944}
   - component: {fileID: 1692902943}
   - component: {fileID: 1692902942}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gravikitty
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1362,7 +1367,7 @@ GameObject:
   - component: {fileID: 1712796989}
   - component: {fileID: 1712796988}
   - component: {fileID: 1712796993}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1516,11 +1521,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 596999870}
   spriteRenderer: {fileID: 127209530}
-  speed: 1
+  speed: 5
   jumpHeight: 0
-  doubleJumpHeight: 0
   fallRateMultiplier: 0
-  lowJumpRateMultiplier: 0
   groundTransform: {fileID: 331788332}
   groundLayerMask:
     serializedVersion: 2
@@ -1529,7 +1532,11 @@ MonoBehaviour:
   waypoints:
   - {fileID: 2112551188}
   - {fileID: 1900707531}
-  rayDistance: 1
+  rayDistance: 2
+  enemyTag: Player
+  raycastLayerMask:
+    serializedVersion: 2
+    m_Bits: 63
 --- !u!1 &1825861179
 GameObject:
   m_ObjectHideFlags: 0
