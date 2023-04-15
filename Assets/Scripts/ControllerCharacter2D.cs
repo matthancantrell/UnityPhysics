@@ -5,8 +5,10 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class ControllerCharacter2D : MonoBehaviour
 {
+    [Header("Sprites & Animations")]
     [SerializeField] Animator animator;
     [SerializeField] SpriteRenderer spriteRenderer;
+    [Header("Movement")]
     [SerializeField] float speed;
     [SerializeField] float jumpHeight;
     [SerializeField] float doubleJumpHeight;

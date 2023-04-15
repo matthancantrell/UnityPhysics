@@ -5,8 +5,10 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class AIController2D : MonoBehaviour
 {
+    [Header("Sprites & Animations")]
     [SerializeField] Animator animator;
     [SerializeField] SpriteRenderer spriteRenderer;
+    [Header("Movement")]
     [SerializeField] float speed;
     [SerializeField] float jumpHeight;
     [SerializeField, Range(1, 5)] float fallRateMultiplier;
@@ -19,21 +21,19 @@ public class AIController2D : MonoBehaviour
     [SerializeField] float rayDistance = 1;
     [SerializeField] string enemyTag;
     [SerializeField] LayerMask raycastLayerMask;
+    GameObject enemy;
 
     Rigidbody2D rb;
     Vector2 velocity = Vector3.zero;
     bool faceRight = true;
     float groundAngle = 0;
     Transform targetWaypoint = null;
-
-    GameObject enemy;
-
         enum State
     {
         IDLE, PATROL, ATTACK, CHASE
     }
 
-    State currentState = State.IDLE;
+    [SerializeField] State currentState = State.IDLE;
     float stateTimer = 1;
 
     void Start()
@@ -42,64 +42,64 @@ public class AIController2D : MonoBehaviour
     }
     void Update()
     {
-        CheckEnemySeen();
+        CheckEnemySeen(); // Sets 'enemy' If Raycast Detects Viable Target
         Vector2 direction = Vector2.zero;
 
         switch(currentState)
         {
             case State.IDLE:
             {
-                if(enemy != null) currentState = State.CHASE;
+                if(enemy != null) currentState = State.CHASE; // If An Enemy Is Specified / Seen, Switch To Chase
 
-                stateTimer -= Time.deltaTime;
-                if(stateTimer <= 0)
+                stateTimer -= Time.deltaTime; // Decrement The State Timer
+                if(stateTimer <= 0) // If At Or Below 0
                 {
-                    SetNewWaypointTarget();
-                    currentState = State.PATROL;
+                    SetNewWaypointTarget(); // Find A New Target Waypoint
+                    currentState = State.PATROL; // Switch To Patrol
                 }
                 break;
             }
             case State.ATTACK:
             {
-                if(animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && !animator.IsInTransition(0))
+                if(animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && !animator.IsInTransition(0)) // If Not Attacking
                 {
-                    currentState = State.CHASE;
+                    currentState = State.CHASE; // Switch To Chase
                 }
                 break;
             }
             case State.CHASE:
             {
-                if(enemy == null)
+                if(enemy == null) // If No Enemy Seen/Specified
                 {
-                    currentState = State.IDLE;
-                    stateTimer = 1;
+                    currentState = State.IDLE; // Switch To Idle
+                    stateTimer = 1; // Reset State Timer
                     break;
                 }
-                float dx = Mathf.Abs(enemy.transform.position.x - transform.position.x);
-                if(dx <= 1f)
+                float dx = Mathf.Abs(enemy.transform.position.x - transform.position.x); // Calculate Distance From Enemy
+                if(dx <= 1f) // If Close
                 {
-                    currentState = State.ATTACK;
-                    animator.SetTrigger("Attack");
-                    Debug.Log("Attack!");
-                }else
+                    currentState = State.ATTACK; // Switch To Attack
+                    animator.SetTrigger("Attack"); // Trigger Attack Animation
+                    Debug.Log("Attack!"); // Let's Me Know That This Is Being Triggered
+                }else // If Not Close
                 {
-                    direction.x = Mathf.Sign(enemy.transform.position.x - transform.position.x);
+                    direction.x = Mathf.Sign(enemy.transform.position.x - transform.position.x); // Move Towards Enemy
                 }
                 break;
             }
             case State.PATROL:
             {
-                if(enemy != null) currentState = State.CHASE;
+                if(enemy != null) currentState = State.CHASE; // If An Enemy Is Specified, Chase After Them
 
-                direction.x = Mathf.Sign(targetWaypoint.position.x - transform.position.x);
-                Physics2D.Raycast(transform.position, Vector2.right * direction.x * rayDistance);
-                Debug.DrawRay(-transform.position, Vector2.right * direction.x * rayDistance);
-                float dx = Mathf.Abs(targetWaypoint.position.x - transform.position.x);
+                direction.x = Mathf.Sign(targetWaypoint.position.x - transform.position.x); // Walk Towards The Waypoint
+                Physics2D.Raycast(transform.position, Vector2.right * direction.x * rayDistance);  // Send Out A Raycast To Detect An Enemy In Sight
+                Debug.DrawRay(transform.position, Vector2.right * direction.x * rayDistance); // Draw The Raycast For Debugging Purposes
+                float dx = Mathf.Abs(targetWaypoint.position.x - transform.position.x); // Calculate Distance From Target
 
-                if(dx <= 0.25f)
+                if(dx <= 0.25f) // If Close
                 {
-                    currentState = State.IDLE;
-                    stateTimer = 0;
+                    currentState = State.IDLE; // Switch To Idle
+                    stateTimer = 1; // Reset State Timer
                 }
                 break;
             }
@@ -107,7 +107,6 @@ public class AIController2D : MonoBehaviour
 
         // check if the character is on the ground
         bool onGround = Physics2D.OverlapCircle(groundTransform.position, 0.02f, groundLayerMask) != null;
-        // get direction input
 
         // set velocity
         velocity.x = direction.x * speed;
@@ -133,11 +132,8 @@ public class AIController2D : MonoBehaviour
         if (velocity.x > 0 && !faceRight) Flip();
         if (velocity.x < 0 &&  faceRight) Flip();
 
-        // rotate character to face direction of movement (velocity)
-
         // Update Animator
         animator.SetFloat("Speed", Mathf.Abs(velocity.x));
-
     }
 
     private void OnDrawGizmos()

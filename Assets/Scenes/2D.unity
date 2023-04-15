@@ -1521,7 +1521,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 596999870}
   spriteRenderer: {fileID: 127209530}
-  speed: 5
+  speed: 3
   jumpHeight: 0
   fallRateMultiplier: 0
   groundTransform: {fileID: 331788332}
@@ -1537,6 +1537,7 @@ MonoBehaviour:
   raycastLayerMask:
     serializedVersion: 2
     m_Bits: 63
+  currentState: 0
 --- !u!1 &1825861179
 GameObject:
   m_ObjectHideFlags: 0
