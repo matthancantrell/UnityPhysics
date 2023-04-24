@@ -80,7 +80,6 @@ public class AIController2D : MonoBehaviour
                 {
                     currentState = State.ATTACK; // Switch To Attack
                     animator.SetTrigger("Attack"); // Trigger Attack Animation
-                    Debug.Log("Attack!"); // Let's Me Know That This Is Being Triggered
                 }else // If Not Close
                 {
                     direction.x = Mathf.Sign(enemy.transform.position.x - transform.position.x); // Move Towards Enemy
