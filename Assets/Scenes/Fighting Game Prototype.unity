@@ -431,6 +431,18 @@ Transform:
   m_Father: {fileID: 1146026982}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &625904833 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 2214442160370968512, guid: 6337342869ae12d4a8f0e2b13bc0d5b1,
+    type: 3}
+  m_PrefabInstance: {fileID: 775502714}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &625904834 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 2214442160370968519, guid: 6337342869ae12d4a8f0e2b13bc0d5b1,
+    type: 3}
+  m_PrefabInstance: {fileID: 775502714}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &653772031
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -732,9 +744,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e8cb6145298e06498565bff46e4d9b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 0}
-  spriteRenderer: {fileID: 0}
-  speed: 0
+  animator: {fileID: 625904833}
+  spriteRenderer: {fileID: 625904834}
+  speed: 1
   fallRateMultiplier: 0
   groundTransform: {fileID: 1691773934}
   groundLayerMask:
@@ -745,7 +757,7 @@ MonoBehaviour:
   - {fileID: 1819411578}
   - {fileID: 1953516443}
   rayDistance: 1
-  enemyTag: 
+  enemyTag: Player
   raycastLayerMask:
     serializedVersion: 2
     m_Bits: 0
