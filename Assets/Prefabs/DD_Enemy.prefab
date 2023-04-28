@@ -247,9 +247,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 2637795623065976910}
   spriteRenderer: {fileID: 2637795623065976905}
-  speed: 3
+  speed: 5
   jumpHeight: 0
-  fallRateMultiplier: 1
+  fallRateMultiplier: 3
   groundTransform: {fileID: 6580649406282121007}
   groundLayerMask:
     serializedVersion: 2

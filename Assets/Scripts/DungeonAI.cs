@@ -10,6 +10,7 @@ public class DungeonAI : MonoBehaviour
     [SerializeField] SpriteRenderer spriteRenderer;
     [Header("Movement")]
     [SerializeField] float speed;
+    [SerializeField] float jumpHeight;
     [SerializeField, Range(1, 5)] float fallRateMultiplier;
     [Header("Ground")]
     [SerializeField] Transform groundTransform;
@@ -17,8 +18,12 @@ public class DungeonAI : MonoBehaviour
     [SerializeField] float groundRadius;
     [Header("AI")]
     [SerializeField] Transform[] waypoints;
+    [SerializeField] float rayDistance = 1;
     [SerializeField] string enemyTag;
+    [SerializeField] LayerMask raycastLayerMask;
+    
     GameObject enemy;
+    Transform enemyPos;
 
     Rigidbody2D rb;
     Vector2 velocity = Vector3.zero;
@@ -114,6 +119,15 @@ public class DungeonAI : MonoBehaviour
         // set velocity
         velocity.x = direction.x * speed;
 
+        if (onGround)
+        {
+            if (velocity.y < 0) velocity.y = 0;
+            if (Input.GetButtonDown("Jump"))
+            {
+                velocity.y += Mathf.Sqrt(jumpHeight * -2 * Physics.gravity.y);
+                animator.SetTrigger("Jump");
+            }
+        }
         // adjust gravity for jump
         float gravityMultiplier = 1;
         if (!onGround && velocity.y < 0) gravityMultiplier = fallRateMultiplier;
