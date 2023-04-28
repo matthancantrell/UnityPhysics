@@ -8,9 +8,9 @@ public class DD_GameManager : MonoBehaviour
     [SerializeField] GameObject StartScreen;
     [SerializeField] GameObject GameOverScreen;
     [SerializeField] GameObject ControlsScreen;
-    [Header("Buttons")]
-    [SerializeField] GameObject StartButton;
-    [SerializeField] GameObject ControlsButton;
+    [Header("Audio")]
+    [SerializeField] AudioSource StartMusic;
+    [SerializeField] GameObject SM;
     [Header("Other")]
     [SerializeField] bool isPaused;
     [SerializeField] ControllerCharacter2D Player;
@@ -23,14 +23,16 @@ public class DD_GameManager : MonoBehaviour
     void Start()
     {
         CurrentState = State.START;
-        StartScreen.SetActive(true);
+        StartMusic.Stop();
     }
 
     void Update()
     {
+
         if (Player.health <= 0)
         {
-            CurrentState = State.START;
+            StartMusic.Stop();
+            CurrentState = State.GAMEOVER;
         }
 
         switch(CurrentState)
@@ -38,11 +40,13 @@ public class DD_GameManager : MonoBehaviour
             case State.START:
             {
                 Time.timeScale = 0;
+                StartScreen.SetActive(true);
                 if (Input.GetKeyDown(KeyCode.S))
                 {
                     StartScreen.SetActive(false);
                     Time.timeScale = 1;
                     CurrentState = State.PLAY;
+                    StartMusic.Play();
                 }
                 break;
             }
@@ -69,9 +73,8 @@ public class DD_GameManager : MonoBehaviour
 
             case State.GAMEOVER:
             {
-                Time.timeScale = 0;
+                Time.timeScale = 1;
                 GameOverScreen.SetActive(true);
-
                 if (Input.GetKeyDown(KeyCode.R))
                 {
                     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
