@@ -21,6 +21,7 @@ public class AIController2D : MonoBehaviour
     [SerializeField] float rayDistance = 1;
     [SerializeField] string enemyTag;
     [SerializeField] LayerMask raycastLayerMask;
+    
     GameObject enemy;
 
     Rigidbody2D rb;
