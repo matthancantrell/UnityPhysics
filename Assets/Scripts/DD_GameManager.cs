@@ -8,24 +8,27 @@ public class DD_GameManager : MonoBehaviour
     [Header("Menus & Screens")]
     [SerializeField] GameObject StartScreen;
     [SerializeField] GameObject GameOverScreen;
-    [SerializeField] GameObject ControlsScreen;
+    [SerializeField] GameObject WinScreen;
     [Header("Audio")]
     [SerializeField] AudioSource StartMusic;
     [SerializeField] GameObject SM;
     [Header("Other")]
     [SerializeField] bool isPaused;
+    [SerializeField] bool winGame;
     [SerializeField] ControllerCharacter2D Player;
     [SerializeField] State CurrentState;
     [SerializeField] TextMeshProUGUI HP_Text;
+    [SerializeField] DD_ColliderThing Win;
     enum State
     {
-        START, PLAY, PAUSE, GAMEOVER
+        START, PLAY, PAUSE, WIN, GAMEOVER
     }
 
     void Start()
     {
         CurrentState = State.START;
         StartMusic.Stop();
+        winGame = false;
     }
 
     void Update()
@@ -34,6 +37,12 @@ public class DD_GameManager : MonoBehaviour
         {
             StartMusic.Stop();
             CurrentState = State.GAMEOVER;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            StartMusic.Stop();
+            CurrentState = State.WIN;
         }
 
         switch(CurrentState)
@@ -56,7 +65,7 @@ public class DD_GameManager : MonoBehaviour
             case State.PLAY:
             {
                 HP_Text.SetText("HP: " + Player.health);
-                
+
                 if (Input.GetKeyDown(KeyCode.P))
                 {
                     CurrentState = State.PAUSE;
@@ -75,6 +84,18 @@ public class DD_GameManager : MonoBehaviour
                 break;
             }
 
+            case State.WIN:
+            {
+                Time.timeScale = 0;
+                HP_Text.SetText("");
+                WinScreen.SetActive(true);
+                if (Input.GetKeyDown(KeyCode.R))
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                }
+                break;
+            }
+
             case State.GAMEOVER:
             {
                 Time.timeScale = 0;
@@ -88,7 +109,6 @@ public class DD_GameManager : MonoBehaviour
             }
         }
     }
-
     private void TogglePause()
     {
         isPaused = !isPaused;
