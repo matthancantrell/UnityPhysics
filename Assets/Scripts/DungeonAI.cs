@@ -23,7 +23,7 @@ public class DungeonAI : MonoBehaviour
     [SerializeField] LayerMask raycastLayerMask;
     
     GameObject enemy;
-    Transform enemyPos;
+    ControllerCharacter2D enemyAttributes;
 
     Rigidbody2D rb;
     Vector2 velocity = Vector3.zero;
@@ -42,6 +42,7 @@ public class DungeonAI : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         enemy = GameObject.FindGameObjectWithTag("Player");
+        enemyAttributes = enemy.GetComponent<ControllerCharacter2D>();
     }
     void Update()
     {
@@ -90,6 +91,7 @@ public class DungeonAI : MonoBehaviour
                 {
                     currentState = State.ATTACK; // Switch To Attack
                     animator.SetTrigger("Attack"); // Trigger Attack Animation
+                    enemyAttributes.health -= 1;
                 }else // If Not Close
                 {
                     direction.x = Mathf.Sign(enemy.transform.position.x - transform.position.x); // Move Towards Enemy

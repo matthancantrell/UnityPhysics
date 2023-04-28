@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.Search;
 using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
-public class ControllerCharacter2D : MonoBehaviour
+public class ControllerCharacter2D : MonoBehaviour, IDamagable
 {
     [Header("Sprites & Animations")]
     [SerializeField] Animator animator;
@@ -18,6 +18,7 @@ public class ControllerCharacter2D : MonoBehaviour
     [SerializeField] Transform groundTransform;
     [SerializeField] LayerMask groundLayerMask;
     [SerializeField] float groundRadius;
+    [SerializeField] public int health;
 
 
     Rigidbody2D rb;
@@ -97,5 +98,10 @@ public class ControllerCharacter2D : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(groundTransform.position, groundRadius);
+    }
+
+    void IDamagable.Damage(int damage)
+    {
+        health -= damage;
     }
 }
