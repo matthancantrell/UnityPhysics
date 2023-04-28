@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class DD_GameManager : MonoBehaviour
@@ -15,6 +16,7 @@ public class DD_GameManager : MonoBehaviour
     [SerializeField] bool isPaused;
     [SerializeField] ControllerCharacter2D Player;
     [SerializeField] State CurrentState;
+    [SerializeField] TextMeshProUGUI HP_Text;
     enum State
     {
         START, PLAY, PAUSE, GAMEOVER
@@ -28,7 +30,6 @@ public class DD_GameManager : MonoBehaviour
 
     void Update()
     {
-
         if (Player.health <= 0)
         {
             StartMusic.Stop();
@@ -41,6 +42,7 @@ public class DD_GameManager : MonoBehaviour
             {
                 Time.timeScale = 0;
                 StartScreen.SetActive(true);
+                HP_Text.SetText("");
                 if (Input.GetKeyDown(KeyCode.S))
                 {
                     StartScreen.SetActive(false);
@@ -53,6 +55,8 @@ public class DD_GameManager : MonoBehaviour
 
             case State.PLAY:
             {
+                HP_Text.SetText("HP: " + Player.health);
+                
                 if (Input.GetKeyDown(KeyCode.P))
                 {
                     CurrentState = State.PAUSE;
@@ -73,7 +77,8 @@ public class DD_GameManager : MonoBehaviour
 
             case State.GAMEOVER:
             {
-                Time.timeScale = 1;
+                Time.timeScale = 0;
+                HP_Text.SetText("");
                 GameOverScreen.SetActive(true);
                 if (Input.GetKeyDown(KeyCode.R))
                 {
