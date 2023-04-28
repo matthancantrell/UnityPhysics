@@ -47,12 +47,6 @@ public class DungeonAI : MonoBehaviour
     {
         Vector2 direction = Vector2.zero;
 
-        if(enemy.transform.position.y <= transform.position.y + 0.5f)
-        {
-            Debug.Log("Moving To Enemy!");
-        }
-
-
         switch(currentState)
         {
             case State.IDLE:
@@ -92,7 +86,7 @@ public class DungeonAI : MonoBehaviour
                     break;
                 }
                 float dx = Mathf.Abs(enemy.transform.position.x - transform.position.x); // Calculate Distance From Enemy
-                if(dx <= 1f) // If Close
+                if(dx <= 1f && IsInRange())
                 {
                     currentState = State.ATTACK; // Switch To Attack
                     animator.SetTrigger("Attack"); // Trigger Attack Animation
@@ -166,8 +160,18 @@ public class DungeonAI : MonoBehaviour
         targetWaypoint = waypoint;
     }
 
-    private bool CheckEnemySeen()
+    private bool IsInRange()
     {
+        RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, ((faceRight) ? Vector2.right : Vector2.left), rayDistance, raycastLayerMask);
+		if (raycastHit.collider != null && raycastHit.collider.gameObject.CompareTag(enemyTag))
+		{
+			Debug.DrawRay(transform.position, ((faceRight) ? Vector2.right : Vector2.left) * rayDistance, Color.red);
+            return true;
+		}
+        return false;
+    }
+    private bool CheckEnemySeen()
+    {   
         if(enemy.transform.position.y <= transform.position.y + 2f) return true;
         return false;
     }
